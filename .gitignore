@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+central_reports/
+var/
+config.json
+.DS_Store
+.vscode

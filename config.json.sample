@@ -1,0 +1,66 @@
+{
+  "smtp": {
+    "host": "localhost",
+    "port": 25,
+    "user": "",
+    "pass": "",
+    "to_email": "security@mycompany.com"
+  },
+  "projects": [
+    "/var/www/html/magento_site_1",
+    "/var/www/html/magento_site_2"
+  ],
+  "report_directory": "/var/log/magento_security_reports",
+
+  "environment": {
+    "type": "docker",
+    "webserver": "nginx"
+  },
+
+  "docker": {
+    "enabled": true,
+    "nginx_container": {
+      "name": "magento2_nginx_1",
+      "config_path": "/etc/nginx/nginx.conf",
+      "log_path": "/var/log/nginx/access.log"
+    },
+    "php_container": {
+      "name": "magento2_php_1",
+      "socket_path": "/var/run/php/php-fpm.sock"
+    },
+    "db_container": {
+      "name": "magento2_db_1",
+      "port": 3306
+    },
+    "magento_root": "/var/www/html",
+    "log_path": "/var/log/nginx/access.log"
+  },
+
+  "host": {
+    "nginx_config_paths": [
+      "/etc/nginx/nginx.conf",
+      "/etc/nginx/sites-enabled/default",
+      "/etc/nginx/sites-enabled/magento"
+    ],
+    "apache_config_paths": [
+      "/etc/apache2/apache2.conf",
+      "/etc/apache2/sites-enabled/000-default.conf"
+    ],
+    "log_paths": [
+      "/var/log/nginx/access.log",
+      "/var/log/apache2/access.log"
+    ]
+  },
+
+  "database": {
+    "mode": "auto",
+    "env_php_path": "app/etc/env.php",
+    "manual": {
+      "host": "127.0.0.1",
+      "port": 3306,
+      "user": "root",
+      "password": "",
+      "database": "magento"
+    }
+  }
+}
