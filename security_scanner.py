@@ -66,6 +66,7 @@ def main():
             docker_config = config_data.get('docker', {})
             host_config = config_data.get('host', {})
             db_config = config_data.get('database', {})
+            skip_config = config_data.get('skips', {})
             
             scanner = SecurityScanner(
                 project_root=project_path,
@@ -74,7 +75,8 @@ def main():
                 env_config=env_config,
                 docker_config=docker_config,
                 host_config=host_config,
-                db_config=db_config
+                db_config=db_config,
+                skip_config=skip_config
             )
             scanner.run()
 

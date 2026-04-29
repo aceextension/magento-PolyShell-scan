@@ -78,6 +78,49 @@ MAGENTO_DB_TABLES = [
     'admin_user',
 ]
 
+# Scan Control Options (Skip specific phases)
+SKIP_OPTIONS = {
+    'project_files': False,    # Skip Phase 1 & 2 (Scanning files for malware)
+    'environment': False,      # Skip Phase 5 (Server config, cron, users, etc.)
+    'core_integrity': False,   # Skip Phase 3 (Git integrity)
+    'logs': False,             # Skip Phase 4 (Access logs)
+    'database': False,         # Skip Phase 6 (Database scan)
+    'php_config': False        # Skip Phase 7 (PHP configuration scan)
+}
+
+# PHP Security Configuration Checks
+PHP_INI_CHECKS = [
+    # Security
+    ('disable_functions', r'exec|passthru|shell_exec|system|proc_open|popen', 'Critical functions not disabled'),
+    ('allow_url_fopen', r'Off', 'allow_url_fopen is enabled (high risk)'),
+    ('allow_url_include', r'Off', 'allow_url_include is enabled (critical risk)'),
+    ('expose_php', r'Off', 'PHP version is exposed in headers'),
+    ('display_errors', r'Off', 'Errors are displayed (information disclosure)'),
+    ('open_basedir', r'.+', 'open_basedir is not set'),
+    ('session.use_strict_mode', r'1|On', 'Session strict mode is disabled'),
+    
+    # Performance (Magento Recommendations)
+    ('opcache.enable', r'1|On', 'Opcache is disabled (major performance impact)'),
+    ('opcache.memory_consumption', r'64|128|256|512', 'Opcache memory is low (< 64MB)'),
+    ('memory_limit', r'512M|768M|1G|2G|4G', 'PHP memory_limit is low (< 512M)'),
+    ('max_execution_time', r'60|120|180|300|600|1800', 'max_execution_time is low (< 60s)'),
+    ('realpath_cache_size', r'4096k|8192k', 'realpath_cache_size is low (performance impact)'),
+]
+
+# Nginx Configuration Checks
+NGINX_CONFIG_CHECKS = [
+    # Security
+    (r'server_tokens\s+off', 'server_tokens is NOT off (version exposure)'),
+    (r'add_header\s+X-Frame-Options', 'Missing X-Frame-Options header (clickjacking risk)'),
+    (r'add_header\s+X-Content-Type-Options', 'Missing X-Content-Type-Options header'),
+    (r'client_max_body_size\s+(\d+)M', 'client_max_body_size might be misconfigured'),
+    
+    # Performance
+    (r'gzip\s+on', 'Gzip compression is disabled'),
+    (r'keepalive_timeout', 'keepalive_timeout not configured'),
+    (r'location\s+\^~\s+/pub/media', 'Explicit /pub/media location block is missing'),
+]
+
 # Patterns to detect malicious content in database
 DB_MALICIOUS_PATTERNS = [
     (r'<script[^>]*>.*?(eval|base64_decode|document\.write).*?</script>', 'Malicious JavaScript injection'),

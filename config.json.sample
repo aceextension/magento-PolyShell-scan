@@ -62,5 +62,12 @@
       "password": "",
       "database": "magento"
     }
+  },
+  "skips": {
+    "project_files": false,
+    "environment": false,
+    "core_integrity": false,
+    "logs": false,
+    "database": false
   }
 }
